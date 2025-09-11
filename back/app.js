@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const app = express()
 
 const bookRoutes = require('./routes/book')
+const userRoutes = require('./routes/user')
 
 mongoose
     .connect(
@@ -31,5 +32,7 @@ app.use((req, res, next) => {
 })
 
 app.use('/api/books', bookRoutes)
+
+app.use('/api/auth', userRoutes)
 
 module.exports = app
