@@ -30,8 +30,6 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use(bodyParse.json())
-
 app.use('/api/books', bookRoutes)
 
 module.exports = app
