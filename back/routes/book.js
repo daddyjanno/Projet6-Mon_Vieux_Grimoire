@@ -8,7 +8,7 @@ const bookControl = require('../controllers/book')
 
 router.get('/', bookControl.getAllBooks)
 
-router.get('/:id', auth, bookControl.findOneBook)
+router.get('/:id', bookControl.findOneBook)
 
 router.post('/', auth, multer, bookControl.createBook)
 
