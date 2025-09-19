@@ -13,13 +13,17 @@ exports.findOneBook = (req, res, next) => {
 }
 
 exports.createBook = (req, res, next) => {
+    const bookObject = JSON.parse(req.body.book)
+
+    delete bookObject._id
+    delete bookObject._userId
+
     const book = new Book({
-        userId: req.body.userId,
-        title: req.body.title,
-        author: req.body.author,
-        imageUrl: req.body.imageUrl,
-        year: req.body.year,
-        genre: req.body.genre,
+        ...bookObject,
+        userId: req.auth.userId,
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${
+            req.file.filename
+        }`,
     })
     book.save()
         .then(() =>
