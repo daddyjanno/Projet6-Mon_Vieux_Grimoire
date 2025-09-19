@@ -12,7 +12,7 @@ router.get('/:id', auth, bookControl.findOneBook)
 
 router.post('/', auth, multer, bookControl.createBook)
 
-router.put('/:id', auth, bookControl.modifyBook)
+router.put('/:id', auth, multer, bookControl.modifyBook)
 
 router.delete('/:id', auth, bookControl.deleteBook)
 
