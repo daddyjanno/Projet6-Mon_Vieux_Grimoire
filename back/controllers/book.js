@@ -26,6 +26,7 @@ exports.createBook = (req, res, next) => {
         imageUrl: `${req.protocol}://${req.get('host')}/images/${
             req.file.filename
         }`,
+        averageRating: bookObject.ratings[0].grade,
     })
     book.save()
         .then(() =>
