@@ -1,14 +1,9 @@
-require('dotenv').config()
-
 const express = require('express')
 const mongoose = require('mongoose')
-
-const app = express()
-
-const path = require('path')
-
 const bookRoutes = require('./routes/book')
 const userRoutes = require('./routes/user')
+const path = require('path')
+require('dotenv').config()
 
 mongoose
     .connect(
@@ -17,6 +12,8 @@ mongoose
     )
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'))
+
+const app = express()
 
 app.use(express.json())
 
@@ -33,10 +30,8 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use('/images', express.static(path.join(__dirname, 'images')))
-
-app.use('/api/books', bookRoutes)
-
 app.use('/api/auth', userRoutes)
+app.use('/api/books', bookRoutes)
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 module.exports = app

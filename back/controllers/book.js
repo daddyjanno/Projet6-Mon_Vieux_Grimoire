@@ -1,3 +1,4 @@
+const { error } = require('console')
 const Book = require('../models/Book')
 const fs = require('fs')
 
@@ -34,8 +35,6 @@ exports.createBook = (req, res, next) => {
 }
 
 exports.modifyBook = (req, res, next) => {
-    debugger
-
     const bookObject = req.file
         ? {
               ...JSON.parse(req.body.book),
@@ -46,6 +45,7 @@ exports.modifyBook = (req, res, next) => {
         : { ...req.body }
 
     delete bookObject._userId
+
     Book.findOne({ _id: req.params.id })
         .then((book) => {
             if (book.userId != req.auth.userId) {
@@ -87,4 +87,55 @@ exports.deleteBook = (req, res, next) => {
         .catch((error) => {
             res.status(500).json({ error })
         })
+}
+
+exports.createRating = (req, res, next) => {
+    if (req.body.rating > 0 && req.body.rating <= 5) {
+        const ratedBook = { ...req.body, grade: req.body.rating }
+        delete ratedBook._id
+
+        Book.findOne({ _id: req.params.id })
+            .then((book) => {
+                const ratings = book.ratings
+                if (ratings.some(ratings.userId === req.auth.userId)) {
+                    res.status(401).json({ message: 'Not authorized' })
+                } else {
+                    ratings.push(ratedBook)
+                    const averageRating =
+                        grades.reduce((total, curr) => (total += curr)) /
+                        grades.length
+                    book.averageRating = averageRating
+                    Book.updateOne(
+                        { _id: req.params.id },
+                        {
+                            ratings,
+                            averageRating,
+                            _id: req.params.id,
+                        }
+                    )
+                        .then(() => {
+                            res.status(201).json()
+                        })
+                        .catch((error) => {
+                            res.status(400).json({ error })
+                        })
+                    res.status(200).json(book)
+                }
+            })
+            .catch((error) => {
+                res.status(400).json({ error })
+            })
+    } else {
+        res.status(400).json({
+            message: 'La note doit être comprise entre 1 et 5',
+        })
+    }
+}
+
+exports.getBestRating = (req, res, next) => {
+    Book.find()
+        .sort({ averageRating: -1 })
+        .limit(3)
+        .then((books) => res.status(200).json(books))
+        .catch((error) => res.status(400).json({ error }))
 }
