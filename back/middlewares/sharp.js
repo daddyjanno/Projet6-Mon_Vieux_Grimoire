@@ -1,7 +1,7 @@
 const sharp = require('sharp')
-const { unlinkSync, writeFileSync } = require('fs')
+const fs = require('fs')
 
-export default async (req, res, next) => {
+const sharpOptimization = async (req, res, next) => {
     if (req.skipImageProcessing) {
         return next()
     }
@@ -9,11 +9,11 @@ export default async (req, res, next) => {
     //Optimisation du fichier d'origine
     const webpBuffer = await sharp(req.file.path)
         .webp({ quality: 80 })
-        .resize({ height: 600, fit: 'inside', withoutEnlargement: true })
+        .resize({ height: 300, fit: 'inside', withoutEnlargement: true })
         .toBuffer()
 
     // Suppression du fichier d'origine
-    unlinkSync(req.file.path)
+    fs.unlinkSync(req.file.path)
 
     // On remplace l'extension d'origine dans le nom et dans le chemin du fichier par "_optimized.webp"
     const webpPath = req.file.path
@@ -28,7 +28,7 @@ export default async (req, res, next) => {
         .join('_')
 
     // Enregistrement du nouveau fichier .webp
-    writeFileSync(webpPath, webpBuffer)
+    fs.writeFileSync(webpPath, webpBuffer)
 
     // Mise à jour du nom et du chemin d'accès du fichier dans la requête pour pointer vers le nouveau fichier .webp
     req.file.path = webpPath
@@ -36,3 +36,5 @@ export default async (req, res, next) => {
 
     next()
 }
+
+module.exports = sharpOptimization

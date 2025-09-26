@@ -22,7 +22,7 @@ exports.createBook = (req, res, next) => {
     const book = new Book({
         ...bookObject,
         userId: req.auth.userId,
-        imageUrl: `${req.protocol}://${req.get('host')}/images/resized_${
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${
             req.file.filename
         }`,
         averageRating:
@@ -41,7 +41,7 @@ exports.modifyBook = (req, res, next) => {
     const bookObject = req.file
         ? {
               ...JSON.parse(req.body.book),
-              imageUrl: `${req.protocol}://${req.get('host')}/images/resized_${
+              imageUrl: `${req.protocol}://${req.get('host')}/images/${
                   req.file.filename
               }`,
           }
