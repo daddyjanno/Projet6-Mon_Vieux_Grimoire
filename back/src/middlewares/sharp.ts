@@ -1,12 +1,16 @@
-const sharp = require('sharp')
-const fs = require('fs')
+import sharp from 'sharp'
+import fs from 'fs'
+import { Request, Response, NextFunction } from 'express'
 
-const sharpOptimization = async (req, res, next) => {
-    if (req.skipImageProcessing) {
+const sharpOptimization = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
+    if (!req.file) {
         return next()
     }
-
-    //Optimisation du fichier d'origine
+    //Optimisation du fichier d'origine en .webp avec resize
     const webpBuffer = await sharp(req.file.path)
         .webp({ quality: 80 })
         .resize({ height: 300, fit: 'inside', withoutEnlargement: true })
@@ -30,6 +34,8 @@ const sharpOptimization = async (req, res, next) => {
     // Enregistrement du nouveau fichier .webp
     fs.writeFileSync(webpPath, webpBuffer)
 
+    console.log(webpFileName, webpPath)
+
     // Mise à jour du nom et du chemin d'accès du fichier dans la requête pour pointer vers le nouveau fichier .webp
     req.file.path = webpPath
     req.file.filename = webpFileName
@@ -37,4 +43,4 @@ const sharpOptimization = async (req, res, next) => {
     next()
 }
 
-module.exports = sharpOptimization
+export default sharpOptimization
