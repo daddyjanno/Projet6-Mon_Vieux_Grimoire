@@ -146,16 +146,18 @@ const createRating = (req: Request, res: Response, next: NextFunction) => {
             res.status(401).json({ message: 'Not authorized' })
         }
 
-        const ratedBook: RatingType = {
+        const newRating: RatingType = {
             userId: req.auth!.userId,
             grade: ratingValue,
         }
-        book.ratings.push(ratedBook)
+        book.ratings.push(newRating)
 
         const grades = book.ratings.map((rating) => Number(rating.grade))
 
         const averageRating =
             grades.reduce((acc, nb) => acc + Number(nb), 0) / grades.length
+
+        console.log(averageRating)
 
         book.averageRating = averageRating
 

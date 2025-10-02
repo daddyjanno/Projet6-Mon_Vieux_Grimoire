@@ -120,13 +120,14 @@ const createRating = (req, res, next) => {
         if (alreadyRated) {
             res.status(401).json({ message: 'Not authorized' });
         }
-        const ratedBook = {
+        const newRating = {
             userId: req.auth.userId,
             grade: ratingValue,
         };
-        book.ratings.push(ratedBook);
+        book.ratings.push(newRating);
         const grades = book.ratings.map((rating) => Number(rating.grade));
         const averageRating = grades.reduce((acc, nb) => acc + Number(nb), 0) / grades.length;
+        console.log(averageRating);
         book.averageRating = averageRating;
         Book_1.default.updateOne({ _id: req.params.id }, {
             ratings: book.ratings,
