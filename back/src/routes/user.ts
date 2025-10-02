@@ -1,9 +1,9 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
 
-const userControl = require('../controllers/user')
+import userControl from '../controllers/user'
 
 router.post('/signup', userControl.signup)
 router.post('/login', userControl.login)
 
-module.exports = router
+export default router

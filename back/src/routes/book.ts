@@ -1,11 +1,11 @@
-const express = require('express')
+import express from 'express'
+import auth from '../middlewares/auth'
+
+import multer from '../middlewares/multer-config'
+import sharpOptimization from '../middlewares/sharp'
+import bookControl from '../controllers/book'
+
 const router = express.Router()
-
-const auth = require('../middlewares/auth')
-const multer = require('../middlewares/multer-config')
-const sharpOptimization = require('../middlewares/sharp')
-
-const bookControl = require('../controllers/book')
 
 router.get('/bestrating', bookControl.getBestRating)
 router.get('/', bookControl.getAllBooks)
@@ -18,4 +18,4 @@ router.put('/:id', auth, multer, sharpOptimization, bookControl.modifyBook)
 
 router.delete('/:id', auth, bookControl.deleteBook)
 
-module.exports = router
+export default router
